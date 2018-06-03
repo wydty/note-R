@@ -1,0 +1,49 @@
+
+#项目地址 https://github.com/sherrillmix/taxonomizr
+
+
+# 把NCBI的taxonomy数据库和accessionnumber对应taxID数据库
+
+# access号得到 taxonomy信息
+# ftp://ftp.ncbi.nih.gov/pub/taxonomy/taxdump.tar.gz
+
+
+```{r}
+# install.packages("taxonomizr")
+# devtools::install_github("sherrillmix/taxonomizr")
+
+library(taxonomizr)
+```
+
+下载 taxonomy数据库,解压为2个文件。需要的时候直接读取就可以了， 41M左右
+```{r }
+# getNamesAndNodes()  #下载
+taxaNodes<-read.nodes('E:/git/db/nodes.dmp')
+taxaNames<-read.names('E:/git/db/names.dmp')
+
+# 几个G，read.accession2taxid转化为sql 文件
+#getAccession2taxid() ##下载
+#read.accession2taxid(list.files('.','accession2taxid.gz$'),'accessionTaxa.sql')
+```
+
+```{r}
+#1.accessionToTaxa   acc得到taxid
+taxaId<-accessionToTaxa(c("LN847353.1","AL079352.3"),"accessionTaxa.sql")
+print(taxaId)
+getTaxonomy(taxaId,taxaNodes,taxaNames)
+
+
+taxaId<-accessionToTaxa(c("LN847353","AL079352"),"accessionTaxa.sql",version='base')
+print(taxaId)
+taxId<-c('1313','9606')
+# getTaxonomy taxid得到各级别
+getTaxonomy(taxaId,taxaNodes,taxaNames)
+```
+
+
+```{r}
+# getID 通过名称得到tacid
+taxaId<-getId(c('Homo sapiens','Bos taurus','Homo'),taxaNames)
+print(taxaId)
+getTaxonomy(taxaId,taxaNodes,taxaNames)
+```
